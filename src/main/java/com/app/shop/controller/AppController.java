@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,17 @@ public class AppController {
 	@GetMapping("/view")
 	public List<Product> findAllProducts(){
 		return prepo.findAll();
+	}
+	@GetMapping("/view/{productid}")
+	public Product getProduct(@PathVariable int productid)
+	{
+		Optional<Product> task = prepo.findById(productid);
+		Product retreiveobj = null;
+		if(task.isPresent())
+		{
+			retreiveobj = task.get();
+		}
+		return retreiveobj;
 	}
 	// add product
 	@PostMapping("/add")
@@ -64,15 +76,8 @@ public class AppController {
 		}
 		return update;
 	}
-	@DeleteMapping("/delete")
-	public void deleteTask(@RequestBody Product obj) {
-		Optional<Product> p = prepo.findById(obj.getProductid());
-		if(p.isPresent()) {
-			prepo.deleteById(obj.getProductid());
-			System.out.println("Delete successful");
-		}
-		else {
-			System.out.println("Product not found");
-		}
+	@DeleteMapping("/delete/{productid}")
+	public void deleteProduct(@PathVariable int productid) {
+		prepo.deleteById(productid);
 	}
 }
